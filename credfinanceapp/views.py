@@ -68,27 +68,6 @@ def registration_api_endpoint(request):
         new_account = serializer.save()
         bvn = serializer.validated_data.get('bvn', None)
         create_profile_and_wallet(new_account=new_account, bvn=bvn)
-        """
-        new_user_profile = UserProfile.objects.create(
-            user=new_account,
-            first_name = new_account.first_name,
-            last_name = new_account.last_name
-        )
-
-        if bvn is not None:
-            new_user_profile.bvn = bvn
-            new_user_profile.save()
-
-        default_wallet = Wallet.objects.get(wallet_category='Savings')
-        new_account_wallet = UserWallet()
-        new_account_wallet.owner = new_account
-        new_account_wallet.save()
-        new_account_wallet.wallet.add(default_wallet)
-        
-        WalletBalance.objects.create(
-            owner=new_account,
-            wallet=default_wallet,
-            balance=1000)"""
 
         data['response'] = 'New account created successfully.'
         data['email'] = new_account.email
