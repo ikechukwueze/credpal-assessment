@@ -84,22 +84,17 @@ def registration_api_endpoint(request):
 
 @api_view(["PUT",])
 @permission_classes([IsAuthenticated])
-def change_password_api_endpoint(request):
-    serializer = ChangePasswordSerializer(data=request.data, context={'request':request})
+def change_password_api_endpoint(request, email):
+    try:
+        account = Account.objects.get(email=email)
+    except Account.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = ChangePasswordSerializer(account, data=request.data, context={'request':request})
     #user = request.user
     data = {}
-    print(serializer)
     
     if serializer.is_valid():
-        """
-        email = serializer.validated_data['email']
-        print(email)
-        account = Account.objects.get(email=email)
-        print(account)
-        print(user)
-        if account != user:
-            return Response({'response':'You are unauthorized'})"""
-        
         serializer.save()
         data['response'] = 'Password changed successfully'
         return Response(data, status=status.HTTP_200_OK)

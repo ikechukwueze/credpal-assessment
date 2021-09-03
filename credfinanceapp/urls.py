@@ -11,5 +11,5 @@ urlpatterns = [
     path('signout/', views.sign_out_view, name="sign_out_view"),
     path('api/signin/', obtain_auth_token),
     path('api/register/', views.registration_api_endpoint),
-    path('api/change-password/', views.change_password_api_endpoint),
+    path('api/change-password/<str:email>/', views.change_password_api_endpoint),
 ]
