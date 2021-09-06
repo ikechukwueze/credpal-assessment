@@ -15,33 +15,22 @@
   </head>
   <body class="text-center">
     <main class="form-signin">
-      <form method="POST" action='' id="sign-up-form">
+      <form method="POST" id="sign-up-form">
         {% csrf_token %}
         <i class="bi bi-person-circle" style="font-size: 3rem;"></i>
         <h1 class="h3 mb-3 fw-light">Sign up!</h1>
-        <div class="form-floating mb-2">
-          {% if signupform.errors %}
-            <small id="hint_id_password1" class="form-text text-muted text-start">
-              {% for field in signupform %}
-                  {% for error in field.errors %} 
-                    <strong class="text-danger">{{ error|escape }}</strong>
-                  {% endfor %}
-              {% endfor %}
-            </small>
-          {% endif %}
-        </div>
         <div class="row gx-1">
           <div class="form-floating mb-2 col-sm-12 col-md-6">
-            {{ signupform.first_name }}
+            <input type="text" name="first_name" class="form-control" minlength="2" maxlength="30" id="first_name" required>
             <label for="first_name"><small>First Name</small></label>
           </div>
           <div class="form-floating mb-2 col-sm-12 col-md-6">
-            {{ signupform.last_name }}
+            <input type="text" name="last_name" class="form-control" minlength="2" maxlength="60" id="last_name" required>
             <label for="last_name"><small>Last Name</small></label>
           </div>
         </div>
         <div class="form-floating mb-2">
-            {{ signupform.email }}
+          <input type="email" name="email" class="form-control" id="email" maxlength="150" required>
           <label for="username"><small>Email</small></label>
         </div>
         <div class="form-floating mb-2">
@@ -49,7 +38,7 @@
           <label for="bvn"><small>BVN (optional)</small></label>
         </div>
         <div class="form-floating mb-2">
-            {{ signupform.password1 }}
+          <input type="password" name="password" class="form-control" id="floatingPassword1" minlength="8" required>
           <label for="floatingPassword1"><small>Password</small></label>
           <small id="hint_id_password1" class="form-text text-muted text-start">
             <ul>
@@ -59,11 +48,11 @@
           </small>
         </div>
         <div class="form-floating mb-2">
-            {{ signupform.password2 }}
+          <input type="password" name="password2" class="form-control" id="floatingPassword2" minlength="8" required>
           <label for="floatingPassword2"><small>Confirm password</small></label>
         </div>
         <button class="w-100 btn btn-lg btn-primary" type="submit">Sign Up</button>
-        <p class="mt-2 mb-3 text-muted">Already have an account? <a class="text-decoration-none" href="{% url 'sign_in_view' %}">Sign in</a></p>
+        <p class="mt-2 mb-3 text-muted">Already have an account? <a class="text-decoration-none" href="">Sign in</a></p>
       </form>
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

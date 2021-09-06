@@ -3,7 +3,8 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from rest_framework.authtoken.models import Token
+
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 # Create your models here.
@@ -41,36 +42,37 @@ class MyAccountManager(BaseUserManager):
 
 
 class Account(AbstractBaseUser):
-    email = models.EmailField(verbose_name="email", max_length=60, unique=True)
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    date_joined	= models.DateTimeField(verbose_name='date joined', auto_now_add=True)
-    last_login = models.DateTimeField(verbose_name='last login', auto_now=True)
-    is_admin = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
+	email = models.EmailField(verbose_name="email", max_length=60, unique=True)
+	first_name = models.CharField(max_length=30)
+	last_name = models.CharField(max_length=30)
+	date_joined	= models.DateTimeField(verbose_name='date joined', auto_now_add=True)
+	last_login = models.DateTimeField(verbose_name='last login', auto_now=True)
+	is_admin = models.BooleanField(default=False)
+	is_active = models.BooleanField(default=True)
+	is_staff = models.BooleanField(default=False)
+	is_superuser = models.BooleanField(default=False)
+	
+	USERNAME_FIELD = 'email'
+	REQUIRED_FIELDS = ['first_name', 'last_name']
+	
+	objects = MyAccountManager()
+
+	def __str__(self):
+		return self.email
+	
+	def tokens(self):
+		auth_tokens = RefreshToken.for_user(self)
+		return {
+			'refresh': str(auth_tokens),
+			'access': str(auth_tokens.access_token)
+		}
     
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
-    objects = MyAccountManager()
-
-    def __str__(self):
-	    return self.email
-
-    def has_perm(self, perm, obj=None):
+	def has_perm(self, perm, obj=None):
 	    return self.is_admin
-
-    def has_module_perms(self, app_label):
+    
+	def has_module_perms(self, app_label):
 	    return True
 
-
-
-# post save method for to create token for new account
-@receiver(post_save, sender=Account)
-def create_auth_token(sender, instance, created, **kwargs):
-    if created:
-        token = Token.objects.create(user=instance)
 
 
 
@@ -78,6 +80,7 @@ class UserProfile(models.Model):
 	user = models.OneToOneField(Account, on_delete=models.CASCADE)
 	first_name = models.CharField(max_length=30)
 	last_name = models.CharField(max_length=30)
+	email = models.EmailField(blank=True, null=True)
 	bvn = models.IntegerField(blank=True, null=True)
 	bvn_verified = models.BooleanField(default=False)
 	profile_picture = models.ImageField(upload_to='profile_pictures', default='default_profile_pic.jpg')
@@ -105,7 +108,7 @@ class UserWallet(models.Model):
 
 
 class WalletBalance(models.Model):
-	owner = models.ForeignKey(Account, on_delete=models.CASCADE)
+	owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
 	wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
 	balance = models.DecimalField(max_digits=8, decimal_places=2)
 

@@ -1,3 +1,4 @@
+/*
 $(document).ready(function(){
     console.log('here')
     $('#sign-up-form').on('submit', function(){
@@ -25,3 +26,4 @@ $(document).ready(function(){
           });
       });
   });
+*/

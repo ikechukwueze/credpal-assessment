@@ -15,6 +15,7 @@ class SignUpForm(UserCreationForm):
                 "minlength": "2",
                 "maxlength": "30",
                 "id": "first_name",
+                "autofocus": True
             }
         ),
     )
@@ -36,7 +37,13 @@ class SignUpForm(UserCreationForm):
     email = forms.EmailField(
         max_length=60,
         required=True,
-        widget=forms.EmailInput(attrs={"class": "form-control", "id": "email"}),
+        widget=forms.EmailInput(
+            attrs={
+                "class": "form-control",
+                "id": "email",
+                "autofocus": False
+            }
+        ),
     )
 
     bvn = forms.IntegerField(
